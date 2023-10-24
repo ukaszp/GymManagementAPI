@@ -36,6 +36,15 @@ namespace GymApi.Models.Validators
                         context.AddFailure("Email", "Account with this Email already exist");
                     }
                 });
+            RuleFor(x => x.Password)
+               .Custom((value, context) =>
+               {
+                   var email = context.InstanceToValidate.Email;
+                   if (value == email)
+                   {
+                       context.AddFailure("Password", "Password cannot be the same as the email");
+                   }
+               });
         }
     }
 }

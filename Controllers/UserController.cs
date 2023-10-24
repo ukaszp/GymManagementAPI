@@ -26,6 +26,18 @@ namespace GymApi.Controllers
             return Ok(users);
         }
 
+        [HttpPost("register")]
+        public ActionResult CreateUser([FromBody] CreateUserDto dto)
+        {
+            _userService.CreateUser(dto);
+            return Ok();
+        }
+        [HttpPost("login")]
+        public ActionResult Login([FromBody]LoginDto dto)
+        {
+
+        }
+
         [HttpGet("{id}")]
         public ActionResult<User> Get([FromRoute]int id)
         {
@@ -34,12 +46,6 @@ namespace GymApi.Controllers
            return Ok(user);
         }
 
-        [HttpPost("register")]
-        public ActionResult CreateUser([FromBody] CreateUserDto dto)
-        {
-           _userService.CreateUser(dto);
-            return Ok();
-        }
 
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] User user, [FromRoute]int id)
