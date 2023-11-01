@@ -1,6 +1,8 @@
 ﻿using GymApi.Entities;
 using GymApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace GymApi.Controllers
 {
@@ -16,7 +18,8 @@ namespace GymApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAll()
+
+        public ActionResult<IEnumerable<Training>> GetAll()
         {
             var trainings = _trainingService.GetAll();
 
@@ -24,6 +27,7 @@ namespace GymApi.Controllers
         }
 
         [HttpGet("{id}")]
+
         public ActionResult<Training> Get([FromRoute] int id)
         {
             var training = _trainingService.GetById(id);
@@ -32,6 +36,8 @@ namespace GymApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Trainer")]
+
         public ActionResult CreateTraining([FromBody] Training training)
         {
             var id = _trainingService.CreateTraining(training);
@@ -39,6 +45,8 @@ namespace GymApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Trainer")]
+
         public ActionResult Update([FromBody] Training training, [FromRoute] int id)
         {
             _trainingService.UpdateTraining(id, training);
@@ -47,6 +55,8 @@ namespace GymApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, Trainer")]
+
         public ActionResult Delete([FromRoute] int id)
         {
             _trainingService.DeleteTraining(id);

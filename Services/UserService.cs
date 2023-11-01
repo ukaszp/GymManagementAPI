@@ -5,6 +5,7 @@ using GymApi.Exceptions;
 using GymApi.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 
 namespace GymApi.Services
@@ -15,13 +16,17 @@ namespace GymApi.Services
         private readonly ILogger<UserService> _logger;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
+        private readonly MembershipService _membershipService;
+        private readonly PlanService _planService;
 
-        public UserService(GymDbContext dbContext, ILogger<UserService> logger, IPasswordHasher passwordHasher, IMapper mapper)
+        public UserService(GymDbContext dbContext, ILogger<UserService> logger, IPasswordHasher passwordHasher, IMapper mapper, MembershipService membershipService, PlanService planService)
         {
             _dbContext = dbContext;
             _logger = logger;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
+            _membershipService = membershipService;
+            _planService = planService;
         }
 
         public User GetById(int id)
@@ -86,7 +91,7 @@ namespace GymApi.Services
               .Users
               .FirstOrDefault(u => u.Id == id);
 
-            if (user is null)
+            if (userdb is null)
                 throw new NotFoundException("User not found");
 
             userdb.Name=user.Name;
@@ -99,5 +104,90 @@ namespace GymApi.Services
             _dbContext.SaveChanges();
         }
 
+        public int AddMembership(Membership membership, int id)
+        {
+            _membershipService.CreateMembership(membership);
+
+            var userdb = _dbContext
+              .Users
+              .FirstOrDefault(u => u.Id == id);
+
+            if (userdb is null)
+                throw new NotFoundException("User not found");
+
+            userdb.MembershipId = membership.Id;
+            _dbContext.SaveChanges();
+            return membership.Id;
+        }     
+        public void RemoveMembership(int userid)
+        {
+            var userdb = _dbContext
+              .Users
+              .FirstOrDefault(u => u.Id == userid);
+
+            if (userdb is null)
+                throw new NotFoundException("User not found");
+
+            var membershipdb= _dbContext
+                .MemberShips
+                .FirstOrDefault(u => u.Id == userdb.MembershipId);
+            _dbContext.SaveChanges();
+
+        }
+        public void UpdateMembership(int userid, Membership membership)
+        {
+            var userdb = _dbContext
+             .Users
+             .FirstOrDefault(u => u.Id == userid);
+
+            if (userdb is null)
+                throw new NotFoundException("User not found");
+
+            _membershipService.UpdateMembership(userdb.MembershipId, membership);
+        }
+
+        public void PickPlan(int planid, int userid)
+        {
+            var userdb = _dbContext
+            .Users
+            .FirstOrDefault(u => u.Id == userid);
+
+            var plandb = _dbContext
+            .Users
+            .FirstOrDefault(u => u.Id == planid);
+
+            if (userdb is null)
+                throw new NotFoundException("User not found");
+
+            var usermembershipid = userdb.MembershipId;
+            var membership = _dbContext
+                .MemberShips
+                .FirstOrDefault(x => x.Id == usermembershipid);
+
+            if (membership is null)
+                throw new NotFoundException("Membership not found");
+
+            _planService.AddMembership(membership);
+            _dbContext.SaveChanges();
+        }
+
+        public void AssignRole(int userId, int roleId) 
+        { 
+            var userdb = _dbContext
+                .Users
+                .FirstOrDefault(u => u.Id == userId);
+
+            var roledb = _dbContext
+               .Roles
+               .FirstOrDefault(u => u.Id == roleId);
+
+            if (userdb is null)
+                throw new NotFoundException("user not found");
+            if (roledb is null)
+                throw new NotFoundException("Role not found");
+
+            userdb.Role = roledb;
+            _dbContext.SaveChanges();
+        }
     }
 }

@@ -10,5 +10,13 @@ namespace GymApi.Services
         User GetById(int id);
         void DeleteUser(int id);
         void UpdateUser(int id, User user);
+        public int AddMembership(Membership membership, int id);
+        public void RemoveMembership(int userid);
+        public void UpdateMembership(int userid, Membership membership);
+        public void PickPlan(int planid, int userid);
+        public void AssignRole(int userId, int roleId);
+
+
+
     }
 }
