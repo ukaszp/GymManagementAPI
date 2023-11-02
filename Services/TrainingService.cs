@@ -3,7 +3,7 @@ using GymApi.Exceptions;
 
 namespace GymApi.Services
 {
-    public class TrainingService
+    public class TrainingService:ITrainingService
     {
         private readonly GymDbContext _dbContext;
         private readonly ILogger<TrainingService> _logger;

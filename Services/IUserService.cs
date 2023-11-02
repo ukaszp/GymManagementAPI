@@ -15,6 +15,9 @@ namespace GymApi.Services
         public void UpdateMembership(int userid, Membership membership);
         public void PickPlan(int planid, int userid);
         public void AssignRole(int userId, int roleId);
+        public Membership GetUserMembership(int userId);
+        public Plan GetUserPlan(int userId);
+
 
 
 

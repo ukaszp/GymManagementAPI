@@ -71,14 +71,20 @@ namespace GymApi.Services
 
             _dbContext.SaveChanges();
         }
-        public int AddMembership(Membership membership)
+        public int AddMembership(Membership membership, int planId)
         {
+            var plandb = _dbContext
+              .Plans
+              .FirstOrDefault(u => u.Id == planId);
+
             if (membership is null)
                 throw new NullReferenceException("membership cannot be null");
+            if (plandb is null)
+                throw new NullReferenceException("plan cannot be null");
 
-            _dbContext.MemberShips.Add(membership);
+            plandb.Memberships.Add(membership);
             _dbContext.SaveChanges();
-            return membership.Id;
+            return planId;
         }
         public List<Membership> GetMemberships()
         {

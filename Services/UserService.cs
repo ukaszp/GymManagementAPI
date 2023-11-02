@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Identity;
 using GymApi.Authentication;
 using GymApi.Entities;
 using GymApi.Exceptions;
@@ -16,17 +17,15 @@ namespace GymApi.Services
         private readonly ILogger<UserService> _logger;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
-        private readonly MembershipService _membershipService;
-        private readonly PlanService _planService;
+        private readonly IMembershipService _membershipService;
 
-        public UserService(GymDbContext dbContext, ILogger<UserService> logger, IPasswordHasher passwordHasher, IMapper mapper, MembershipService membershipService, PlanService planService)
+        public UserService(GymDbContext dbContext, ILogger<UserService> logger, IPasswordHasher passwordHasher, IMapper mapper, IMembershipService membershipService)
         {
             _dbContext = dbContext;
             _logger = logger;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _membershipService = membershipService;
-            _planService = planService;
         }
 
         public User GetById(int id)
@@ -152,23 +151,13 @@ namespace GymApi.Services
             .Users
             .FirstOrDefault(u => u.Id == userid);
 
-            var plandb = _dbContext
-            .Users
-            .FirstOrDefault(u => u.Id == planid);
-
             if (userdb is null)
                 throw new NotFoundException("User not found");
 
-            var usermembershipid = userdb.MembershipId;
-            var membership = _dbContext
-                .MemberShips
-                .FirstOrDefault(x => x.Id == usermembershipid);
+            var userMembershipId = userdb.MembershipId;
 
-            if (membership is null)
-                throw new NotFoundException("Membership not found");
-
-            _planService.AddMembership(membership);
-            _dbContext.SaveChanges();
+            _membershipService.SetMembershipPlan(planid, userMembershipId);
+            _dbContext.SaveChanges(true);
         }
 
         public void AssignRole(int userId, int roleId) 
@@ -186,8 +175,46 @@ namespace GymApi.Services
             if (roledb is null)
                 throw new NotFoundException("Role not found");
 
+            userdb.RoleId = roleId; 
             userdb.Role = roledb;
             _dbContext.SaveChanges();
+        }
+
+        public Membership GetUserMembership(int userId)
+        {
+            return _membershipService.GetById(userId);
+
+        }
+
+        public Plan GetUserPlan(int userId)
+        {
+            var userdb = _dbContext
+                .Users
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (userdb is null)
+                throw new NotFoundException("user not found");
+
+            var userMembershipId = userdb.MembershipId;
+
+            var userMembershipDb = _dbContext
+               .MemberShips
+               .FirstOrDefault(u => u.Id == userMembershipId);
+
+            if (userMembershipDb is null)
+                throw new NotFoundException("membership not found");
+
+
+            var userPlanId = userMembershipDb.PlanId;
+
+            var userPlan= _dbContext
+                .Plans
+                .FirstOrDefault(p=>p.Id == userPlanId);
+
+            if (userPlan is null)
+                throw new NotFoundException("plan not found");
+
+            return userPlan;
         }
     }
 }

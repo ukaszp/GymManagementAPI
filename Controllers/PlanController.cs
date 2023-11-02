@@ -14,7 +14,7 @@ namespace GymApi.Controllers
 
             public PlanController(IPlanService planService)
             {
-            _planService = planService;
+               _planService = planService;
             }
 
             [HttpGet]
@@ -29,20 +29,18 @@ namespace GymApi.Controllers
             public ActionResult<Plan> Get([FromRoute] int id)
             {
                 var plan = _planService.GetById(id);
-            return Ok(plan);
-        }
+                return Ok(plan);
+            }
 
             [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public ActionResult CreatePlan([FromBody] Plan plan)
+            public ActionResult CreatePlan([FromBody] Plan plan)
             {
                 var id = _planService.CreatePlan(plan);
                 return Created($"/api/plan/{plan.Id}", null);
             }
 
             [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public ActionResult Update([FromBody] Plan plan, [FromRoute] int id)
+          public ActionResult Update([FromBody] Plan plan, [FromRoute] int id)
             {
             _planService.CreatePlan(plan);
 
@@ -50,17 +48,16 @@ namespace GymApi.Controllers
             }
 
             [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public ActionResult Delete([FromRoute] int id)
+            public ActionResult Delete([FromRoute] int id)
             {
             _planService.DeletePlan(id);
 
                 return NoContent();
             }
             [HttpPost("addMembership")]
-            public ActionResult AddMembership([FromBody] Membership membership)
+            public ActionResult AddMembership([FromBody] Membership membership, int planId)
             {
-                _planService.AddMembership(membership);
+                _planService.AddMembership(membership, planId);
                 return NoContent();
             }
            [HttpGet("memberships")]

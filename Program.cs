@@ -50,6 +50,10 @@ internal class Program
 
         builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IMembershipService, MembershipService>();
+        builder.Services.AddScoped<IRoleService, RoleService>();
+        builder.Services.AddScoped<ITrainingService, TrainingService>();
+        builder.Services.AddScoped<IPlanService, PlanService>();
         builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 
         builder.Services.AddDbContext<GymDbContext>();

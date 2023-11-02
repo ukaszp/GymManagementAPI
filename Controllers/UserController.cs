@@ -35,14 +35,8 @@ namespace GymApi.Controllers
             _userService.CreateUser(dto);
             return Ok();
         }
-        [HttpPost("login")]
-        public ActionResult Login([FromBody]LoginDto dto)
-        {
-
-        }
 
         [HttpGet("{id}")]
-        [Authorize(Roles ="Admin")]
         public ActionResult<User> Get([FromRoute]int id)
         {
             var user=_userService.GetById(id);
@@ -52,8 +46,6 @@ namespace GymApi.Controllers
 
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-
         public ActionResult Update([FromBody] User user, [FromRoute]int id)
         {   
             _userService.UpdateUser(id, user);
@@ -62,8 +54,6 @@ namespace GymApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-
         public ActionResult Delete([FromRoute]int id)
         {
             _userService.DeleteUser(id);
@@ -71,8 +61,6 @@ namespace GymApi.Controllers
             return NoContent();
         }
         [HttpPost("addmembership/{id}")]
-        [Authorize(Roles = "Admin")]
-
         public ActionResult AddMembership([FromBody] Membership membership, [FromRoute] int id)
         {
             _userService.AddMembership(membership, id);
@@ -80,28 +68,29 @@ namespace GymApi.Controllers
             return Ok();
         }
         [HttpPut("updatemembership/{id}")]
-        [Authorize(Roles = "Admin")]
-
         public ActionResult UpdateMembership([FromRoute] int userId, [FromBody] Membership membership)
         {
             _userService.UpdateMembership(userId, membership);
             return Ok();
         }
-        [HttpPut("{planid},{userid}")]
-        [Authorize(Roles = "Admin")]
-
+        [HttpPut("{planid}/{userid}")]
         public ActionResult PickPlan([FromRoute]int planid, [FromRoute] int userid)
         {
             _userService.PickPlan(planid, userid);
             return Ok(); 
         }
-        [HttpPut("assignrole/{roleid}{userid}")]
-        [Authorize(Roles = "Admin")]
-
+        [HttpPut("assignrole/{roleid}/{userid}")]
         public ActionResult AssignRole([FromRoute]int  roleid, [FromRoute]int userid) 
         {
             _userService.AssignRole(roleid, userid);
             return Ok();
         }
+        [HttpGet("userMembership/{id}")]
+        public ActionResult GetUserMembership([FromRoute]int id)
+        {
+            _userService.GetUserMembership(id);
+            return Ok();
+        }
+
     }
 }

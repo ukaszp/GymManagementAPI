@@ -14,12 +14,10 @@ namespace GymApi.Controllers
 
             public RoleController(IRoleService roleService)
             {
-            _roleService = roleService;
-        }
+                _roleService = roleService;
+            }
 
-            [HttpGet]
-        [Authorize(Roles = "Admin")]
-
+        [HttpGet]
         public ActionResult<IEnumerable<Role>> GetAll()
             {
                 var roles = _roleService.GetAll();
@@ -28,8 +26,7 @@ namespace GymApi.Controllers
             }
 
 
-            [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [HttpGet("{id}")]
 
         public ActionResult<Role> Get([FromRoute] int id)
             {
@@ -39,8 +36,7 @@ namespace GymApi.Controllers
             }
 
 
-            [HttpPost]
-        [Authorize(Roles = "Admin")]
+         [HttpPost]
 
         public ActionResult CreateRole([FromBody] Role role)
             {
@@ -56,14 +52,12 @@ namespace GymApi.Controllers
                 return Ok();
             }
 
-            [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-
+        [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
-            {
-                _roleService.DeleteRole(id);
+             {
+               _roleService.DeleteRole(id);
 
-                return NoContent();
-            }
+               return NoContent();
+             }
         }
 }

@@ -8,5 +8,7 @@ namespace GymApi.Entities
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool Status { get; set; }
+
+        public int PlanId { get; set; }
     }
 }

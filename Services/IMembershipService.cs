@@ -9,6 +9,7 @@ namespace GymApi.Services
         public IEnumerable<Membership> GetAll();
         public void DeleteMembership(int id);
         public void UpdateMembership(int id, Membership membership);
+        public void SetMembershipPlan(int planId, int membershipId);
 
 
 

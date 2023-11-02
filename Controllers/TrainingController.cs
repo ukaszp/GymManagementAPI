@@ -36,7 +36,6 @@ namespace GymApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Trainer")]
 
         public ActionResult CreateTraining([FromBody] Training training)
         {
@@ -45,7 +44,6 @@ namespace GymApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, Trainer")]
 
         public ActionResult Update([FromBody] Training training, [FromRoute] int id)
         {
@@ -55,7 +53,6 @@ namespace GymApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, Trainer")]
 
         public ActionResult Delete([FromRoute] int id)
         {

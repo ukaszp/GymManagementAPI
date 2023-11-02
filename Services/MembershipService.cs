@@ -8,11 +8,13 @@ namespace GymApi.Services
     public class MembershipService:IMembershipService
     {
         private readonly GymDbContext _db;
+        private readonly IPlanService _planService;
 
-        public MembershipService(GymDbContext db)
+        public MembershipService(GymDbContext db, IPlanService planService)
         {
 
             _db = db;
+            _planService = planService; ;
         }
         public int CreateMembership(Membership membership)
         {
@@ -71,5 +73,27 @@ namespace GymApi.Services
             membershipdb.Status  = membership.Status;
             _db.SaveChanges();
         }
+
+        public  void SetMembershipPlan(int planId, int membershipId)
+        {
+            var membershipdb = _db
+              .MemberShips
+              .FirstOrDefault(u => u.Id == membershipId);
+
+            var plandb = _db
+             .MemberShips
+             .FirstOrDefault(u => u.Id == planId);
+
+            if (membershipdb is null)
+                throw new NotFoundException("Membership not found");
+            if (plandb is null)
+                throw new NotFoundException("Plan not found");
+
+            membershipdb .PlanId = planId;
+
+            _planService.AddMembership(membershipdb, membershipId);
+        }
+
+        //planservice
     }
 }

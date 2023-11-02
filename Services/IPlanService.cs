@@ -9,7 +9,7 @@ namespace GymApi.Services
         IEnumerable<Plan> GetAll();
         Plan GetById(int id);
         void UpdatePlan(int id, Plan plan);
-        public int AddMembership(Membership membership);
         public List<Membership> GetMemberships();
+        public int AddMembership(Membership membership, int planId);
     }
 }
