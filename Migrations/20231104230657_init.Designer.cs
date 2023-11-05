@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymApi.Migrations
 {
     [DbContext(typeof(GymDbContext))]
-    [Migration("20231024002811_updatedEntities")]
-    partial class updatedEntities
+    [Migration("20231104230657_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -36,7 +36,7 @@ namespace GymApi.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PlanId")
+                    b.Property<int>("PlanId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
@@ -181,8 +181,6 @@ namespace GymApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MembershipId");
-
                     b.HasIndex("RoleId");
 
                     b.HasIndex("TrainingId");
@@ -194,7 +192,9 @@ namespace GymApi.Migrations
                 {
                     b.HasOne("GymApi.Entities.Plan", null)
                         .WithMany("Memberships")
-                        .HasForeignKey("PlanId");
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GymApi.Entities.Training", b =>
@@ -210,12 +210,6 @@ namespace GymApi.Migrations
 
             modelBuilder.Entity("GymApi.Entities.User", b =>
                 {
-                    b.HasOne("GymApi.Entities.Membership", "Membership")
-                        .WithMany()
-                        .HasForeignKey("MembershipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("GymApi.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
@@ -225,8 +219,6 @@ namespace GymApi.Migrations
                     b.HasOne("GymApi.Entities.Training", null)
                         .WithMany("Participants")
                         .HasForeignKey("TrainingId");
-
-                    b.Navigation("Membership");
 
                     b.Navigation("Role");
                 });

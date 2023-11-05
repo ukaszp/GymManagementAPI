@@ -20,12 +20,12 @@ namespace GymApi
                     _db.SaveChanges();
                 }
 
-                if(!_db.Users.Any())
+                /*if(!_db.Users.Any())
                 {
                     var users = GetUsers();
                     _db.Users.AddRange(users);
                     _db.SaveChanges();
-                }
+                }*/
             }
         }
 

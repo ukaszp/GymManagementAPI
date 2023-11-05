@@ -7,7 +7,7 @@ namespace GymApi.Entities
     public class GymDbContext:DbContext
     {
         readonly string _connectrionString=
-            "Server = (localdb)\\MyDataBase; Database=GymDb;Trusted_Connection=True";
+            "Server = (localdb)\\MSSQLLocalDB; Database=GymDb;Trusted_Connection=True";
 
 
         public DbSet<Membership> MemberShips { get; set; }

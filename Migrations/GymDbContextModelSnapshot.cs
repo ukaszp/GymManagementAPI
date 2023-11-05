@@ -33,7 +33,7 @@ namespace GymApi.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PlanId")
+                    b.Property<int>("PlanId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
@@ -189,7 +189,9 @@ namespace GymApi.Migrations
                 {
                     b.HasOne("GymApi.Entities.Plan", null)
                         .WithMany("Memberships")
-                        .HasForeignKey("PlanId");
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GymApi.Entities.Training", b =>

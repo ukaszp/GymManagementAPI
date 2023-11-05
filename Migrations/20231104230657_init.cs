@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GymApi.Migrations
 {
     /// <inheritdoc />
-    public partial class passwodHasher : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,7 +49,7 @@ namespace GymApi.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
-                    PlanId = table.Column<int>(type: "int", nullable: true)
+                    PlanId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +58,8 @@ namespace GymApi.Migrations
                         name: "FK_MemberShips_Plans_PlanId",
                         column: x => x.PlanId,
                         principalTable: "Plans",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,7 +88,6 @@ namespace GymApi.Migrations
                     Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<bool>(type: "bit", nullable: false),
@@ -100,12 +100,6 @@ namespace GymApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_MemberShips_MembershipId",
-                        column: x => x.MembershipId,
-                        principalTable: "MemberShips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Users_Roles_RoleId",
                         column: x => x.RoleId,
@@ -130,11 +124,6 @@ namespace GymApi.Migrations
                 column: "TrainerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_MembershipId",
-                table: "Users",
-                column: "MembershipId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
@@ -157,21 +146,17 @@ namespace GymApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_MemberShips_Plans_PlanId",
-                table: "MemberShips");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Trainings_Users_TrainerId",
                 table: "Trainings");
+
+            migrationBuilder.DropTable(
+                name: "MemberShips");
 
             migrationBuilder.DropTable(
                 name: "Plans");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "MemberShips");
 
             migrationBuilder.DropTable(
                 name: "Roles");
